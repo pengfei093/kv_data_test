@@ -5,7 +5,7 @@ import time
 from utils.kv_database_utils import create_cassandra_cluster
 import signal
 
-from memory_profiler import profile
+# from memory_profiler import profile
 from utils.profiling_utils import timefn
 from utils.util import load_configs_from_files
 
