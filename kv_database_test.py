@@ -4,6 +4,7 @@ import random
 import time
 from utils.kv_database_utils import create_cassandra_cluster
 import signal
+import uuid
 
 from utils.util import load_configs_from_files
 
@@ -18,51 +19,52 @@ class KVDatabaseTest:
         self.current_cassandra_session = self.current_cassandra_cluster.connect()
 
     # @profile
-    def test_insert(self, iter_count=100000):
+    def test_insert(self, iter_count=1):
         t = 0
+        base_length = 10000000000000000000
+        rad_str = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
+                          for _ in range(STRING_LENGTH))
         file = open('insert_test.txt', 'w')
-        for c in range(iter_count):
-            rad_str = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
-                              for _ in range(STRING_LENGTH))
-            t1 = time.time()
-            self.current_cassandra_session.execute("INSERT INTO users (name) VALUES (%s)", (rad_str,))
-            t2 = time.time()
-            ct = t2 - t1
-            file.write(str(ct) + '\n')
-            t = t + ct
-            if c % 100 == 1:
-                print(f'iterate {c} times: {t / c}s')
-        print(f"insert tooks {t} seconds")
-
-    def test_query(self, iter_count=100000):
-        t = 0
-        file = open('query_test.txt', 'w')
         for c in range(iter_count):
             try:
                 t1 = time.time()
-                rows = self.current_cassandra_session.execute('SELECT name FROM users')
+                self.current_cassandra_session.execute("INSERT INTO users (id, name) VALUES (%s, %s)",
+                                                       (str(base_length + iter_count), rad_str))
                 t2 = time.time()
                 ct = t2 - t1
                 file.write(str(ct) + '\n')
                 t = t + ct
-                if c % 100 == 1:
-                    print(f'iterate {c} times: {t / c}s')
+                if c % 1000 == 1:
+                    print(f'insert tooks {t} seconds')
+            except Exception as e:
+                time.sleep(1)
+        print(f"insert tooks {t} seconds")
+
+    def test_query(self, iter_count=1):
+        t = 0
+        file = open('query_test.txt', 'w')
+        for _ in range(iter_count):
+            try:
+                t1 = time.time()
+                rows = self.current_cassandra_session.execute('SELECT name FROM users')
+                t2 = time.time()
+                t = t + t2 - t1
             except Exception as e:
                 time.sleep(1)
         print(f"query tooks {t} seconds")
-        file.close()
 
     def start_test(self, set_val, get_val):
         self.current_cassandra_session.set_keyspace('test')
         self.current_cassandra_session.execute(
             """
             CREATE TABLE IF NOT EXISTS users (
+                id text,
                 name text,
-                PRIMARY KEY (name)
+                PRIMARY KEY (id)
             );
             """
         )
-        self.test_query()
+        self.test_insert()
 
     def start(self):
         self.start_test(set_val=True, get_val=True)
