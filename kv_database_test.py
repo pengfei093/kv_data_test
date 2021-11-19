@@ -38,7 +38,7 @@ class KVDatabaseTest:
                     print(f'insert tooks {t} seconds')
             except Exception as e:
                 time.sleep(1)
-        print(f"insert tooks {t} seconds")
+        print(f"insert {c} times tooks {t} seconds")
 
     def test_query(self, iter_count=500000):
         t = 0
@@ -53,7 +53,7 @@ class KVDatabaseTest:
                 file.write(str(ct) + '\n')
                 t = t + ct
                 if c % 1000 == 1:
-                    print(f'insert tooks {t} seconds')
+                    print(f'query {c} times tooks {t} seconds')
             except Exception as e:
                 print(e)
                 time.sleep(1)
