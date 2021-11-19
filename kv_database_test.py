@@ -43,13 +43,17 @@ class KVDatabaseTest:
     def test_query(self, iter_count=500000):
         t = 0
         file = open('query_test.txt', 'w')
-        for _ in range(iter_count):
+        for c in range(iter_count):
             try:
                 rand_id = str(random.randint(1, base_length + iter_count))
                 t1 = time.time()
                 rows = self.current_cassandra_session.execute(f'SELECT name FROM users where id=%s', [rand_id])
                 t2 = time.time()
-                t = t + t2 - t1
+                ct = t2 - t1
+                file.write(str(ct) + '\n')
+                t = t + ct
+                if c % 1000 == 1:
+                    print(f'insert tooks {t} seconds')
             except Exception as e:
                 print(e)
                 time.sleep(1)
