@@ -9,6 +9,7 @@ import uuid
 from utils.util import load_configs_from_files
 
 STRING_LENGTH = 4100
+base_length = 10000000000000000000
 
 
 class KVDatabaseTest:
@@ -19,9 +20,8 @@ class KVDatabaseTest:
         self.current_cassandra_session = self.current_cassandra_cluster.connect()
 
     # @profile
-    def test_insert(self, iter_count=1):
+    def test_insert(self, iter_count=500000):
         t = 0
-        base_length = 10000000000000000000
         rad_str = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                           for _ in range(STRING_LENGTH))
         file = open('insert_test.txt', 'w')
@@ -40,13 +40,14 @@ class KVDatabaseTest:
                 time.sleep(1)
         print(f"insert tooks {t} seconds")
 
-    def test_query(self, iter_count=1):
+    def test_query(self, iter_count=500000):
         t = 0
         file = open('query_test.txt', 'w')
         for _ in range(iter_count):
             try:
+                rand_id = str(random.randint(1, base_length + iter_count))
                 t1 = time.time()
-                rows = self.current_cassandra_session.execute('SELECT name FROM users')
+                rows = self.current_cassandra_session.execute(f'SELECT name FROM users where id={rand_id}')
                 t2 = time.time()
                 t = t + t2 - t1
             except Exception as e:
@@ -64,7 +65,7 @@ class KVDatabaseTest:
             );
             """
         )
-        self.test_insert()
+        self.test_query()
 
     def start(self):
         self.start_test(set_val=True, get_val=True)
