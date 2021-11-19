@@ -1,6 +1,7 @@
 import profile
 import string
 import random
+import sys
 import time
 from utils.kv_database_utils import create_cassandra_cluster
 import signal
@@ -59,7 +60,7 @@ class KVDatabaseTest:
                 time.sleep(1)
         print(f"query tooks {t} seconds")
 
-    def start_test(self, set_val, get_val):
+    def start_test(self):
         print('program start')
         self.current_cassandra_session.set_keyspace('test')
         self.current_cassandra_session.execute(
@@ -71,15 +72,15 @@ class KVDatabaseTest:
             );
             """
         )
-        self.test_query()
+        self.test_insert()
 
     def start(self):
-        self.start_test(set_val=True, get_val=True)
+        self.start_test()
 
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-
+    agv = sys.argv
     conf = load_configs_from_files("conf/kv_data_config.yaml")
     test = KVDatabaseTest(conf)
     test.start()
