@@ -47,7 +47,7 @@ class KVDatabaseTest:
             try:
                 rand_id = str(random.randint(1, base_length + iter_count))
                 t1 = time.time()
-                rows = self.current_cassandra_session.execute(f'SELECT name FROM users where id="{rand_id}"')
+                rows = self.current_cassandra_session.execute(f'SELECT name FROM users where id=%s', [rand_id])
                 t2 = time.time()
                 t = t + t2 - t1
             except Exception as e:
