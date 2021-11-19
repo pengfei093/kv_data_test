@@ -51,6 +51,7 @@ class KVDatabaseTest:
                 t2 = time.time()
                 t = t + t2 - t1
             except Exception as e:
+                print(e)
                 time.sleep(1)
         print(f"query tooks {t} seconds")
 
