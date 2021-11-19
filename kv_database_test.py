@@ -55,6 +55,7 @@ class KVDatabaseTest:
         print(f"query tooks {t} seconds")
 
     def start_test(self, set_val, get_val):
+        print('program start')
         self.current_cassandra_session.set_keyspace('test')
         self.current_cassandra_session.execute(
             """
