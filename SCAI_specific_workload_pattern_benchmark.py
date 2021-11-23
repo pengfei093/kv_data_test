@@ -45,6 +45,7 @@ class KVDatabaseSCAITest:
                     file.write(str(ct) + '\n')
                     t = t + ct
                 except Exception as e:
+                    print(e)
                     time.sleep(0.01)
             if c % 1000 == 1:
                 print(f'insert {c * 30} tooks {t} seconds')
