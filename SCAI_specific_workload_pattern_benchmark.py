@@ -27,7 +27,7 @@ class KVDatabaseSCAITest:
         t = 0
         rad_str = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                           for _ in range(STRING_LENGTH))
-        file = open('insert_test.txt', 'w')
+        file = open('scai_insert_test.txt', 'w')
         job_ids = []
         for i in range(30):
             job_ids.append(str(i) + job_id)
