@@ -58,7 +58,7 @@ class KVDatabaseSCAITest:
 
     def test_query(self, iter_count=ITER_COUNT):
         t = 0
-        file = open('query_scai_test.txt', 'w')
+        file = open('scai_query_test.txt', 'w')
         for c in range(iter_count):
             try:
                 rand_id = str(random.randint(1, JOB_NUM))
