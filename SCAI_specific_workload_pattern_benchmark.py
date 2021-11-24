@@ -1,4 +1,3 @@
-
 import signal
 import sys
 import string
@@ -32,14 +31,17 @@ class KVDatabaseSCAITest:
         for i in range(30):
             job_ids.append(str(i) + job_id)
 
+        datetime_now = datetime.now()
         for c in range(iter_count):
             for i in range(30):
                 try:
                     t1 = time.time()
                     self.current_cassandra_session.execute("INSERT INTO scai (id, time, job_id, data) "
                                                            "VALUES (%s, %s, %s, %s)",
-                                                           (uuid.uuid4(), str(datetime.now() + c*timedelta(minutes=5)),
-                                                            job_ids[i], rad_str))
+                                                           (
+                                                               uuid.uuid4(),
+                                                               str(datetime_now + c * timedelta(minutes=5)),
+                                                               job_ids[i], rad_str))
                     t2 = time.time()
                     ct = t2 - t1
                     file.write(str(ct) + '\n')
@@ -51,6 +53,36 @@ class KVDatabaseSCAITest:
                 print(f'insert {c * 30} tooks {t} seconds')
         print(f"insert times tooks {t} seconds")
 
+    def test_query(self, iter_count=500000):
+        t = 0
+        file = open('query_scai_test.txt', 'w')
+        for c in range(iter_count):
+            try:
+                rand_id = str(random.randint(1, 30))
+                rand_day_gap = random.randint(1, 500000)
+                job = str(rand_id) + job_id
+                start_time = datetime.now() + rand_day_gap * timedelta(minutes=5)
+                end_time = start_time + timedelta(minutes=5)
+                start_time = str(start_time)
+                end_time = str(end_time)
+
+                t1 = time.time()
+                rows = self.current_cassandra_session.execute('SELECT * FROM scai where job_id=%s AND '
+                                                              'time >= %s AND '
+                                                              'time <= %s token(id) > previous_token LIMIT 100 '
+                                                              'ALLOW FILTERING',
+                                                              [job, start_time, end_time])
+                t2 = time.time()
+                ct = t2 - t1
+                file.write(str(ct) + '\n')
+                t = t + ct
+                if c % 1000 == 1:
+                    print(f'query {c} times tooks {t} seconds')
+            except Exception as e:
+                print(e)
+                time.sleep(1)
+        print(f"query tooks {t} seconds")
+
     def start_test(self):
         print('program start')
         self.current_cassandra_session.set_keyspace('scai_data_test')
@@ -61,12 +93,14 @@ class KVDatabaseSCAITest:
                 time timestamp,
                 job_id text,
                 data text,
-                PRIMARY KEY (id)
+                PRIMARY KEY (job_id, time)
             );
             """
         )
         if self.conf['command'] == 'insert':
             self.test_insert()
+        elif self.conf['command'] == 'query':
+            self.test_query()
 
 
 if __name__ == '__main__':
