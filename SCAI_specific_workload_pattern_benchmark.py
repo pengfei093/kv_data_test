@@ -13,6 +13,9 @@ import random
 
 STRING_LENGTH = 4100
 job_id = '_anomalous_country_communication'
+ITER_COUNT = 500000
+JOB_NUM = 30
+PRINT_GAP = 1000
 
 
 class KVDatabaseSCAITest:
@@ -22,7 +25,7 @@ class KVDatabaseSCAITest:
                                                                   self.conf['cassandra_port'])
         self.current_cassandra_session = self.current_cassandra_cluster.connect()
 
-    def test_insert(self, iter_count=500000):
+    def test_insert(self, iter_count=ITER_COUNT):
         t = 0
         rad_str = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                           for _ in range(STRING_LENGTH))
@@ -33,7 +36,7 @@ class KVDatabaseSCAITest:
 
         datetime_now = datetime.now()
         for c in range(iter_count):
-            for i in range(30):
+            for i in range(JOB_NUM):
                 try:
                     t1 = time.time()
                     self.current_cassandra_session.execute("INSERT INTO scai (id, time, job_id, data) "
@@ -50,27 +53,24 @@ class KVDatabaseSCAITest:
                     print(e)
                     time.sleep(0.01)
             if c % 1000 == 1:
-                print(f'insert {c * 30} tooks {t} seconds')
+                print(f'insert {c * JOB_NUM} tooks {t} seconds')
         print(f"insert times tooks {t} seconds")
 
-    def test_query(self, iter_count=500000):
+    def test_query(self, iter_count=ITER_COUNT):
         t = 0
         file = open('query_scai_test.txt', 'w')
         for c in range(iter_count):
             try:
-                rand_id = str(random.randint(1, 30))
-                rand_day_gap = random.randint(1, 500000)
+                rand_id = str(random.randint(1, JOB_NUM))
                 job = str(rand_id) + job_id
-                start_time = datetime.now() + rand_day_gap * timedelta(minutes=5)
-                end_time = start_time + timedelta(minutes=5)
+                start_time = datetime.now() + c * timedelta(minutes=5)
+                end_time = start_time + timedelta(days=1)
                 start_time = str(start_time)
                 end_time = str(end_time)
 
                 t1 = time.time()
                 rows = self.current_cassandra_session.execute('SELECT * FROM scai where job_id=%s AND '
-                                                              'time >= %s AND '
-                                                              'time <= %s token(id) > previous_token LIMIT 100 '
-                                                              'ALLOW FILTERING',
+                                                              'time >= %s AND time <= %s',
                                                               [job, start_time, end_time])
                 t2 = time.time()
                 ct = t2 - t1
@@ -80,7 +80,7 @@ class KVDatabaseSCAITest:
                     print(f'query {c} times tooks {t} seconds')
             except Exception as e:
                 print(e)
-                time.sleep(1)
+                time.sleep(0.01)
         print(f"query tooks {t} seconds")
 
     def start_test(self):
