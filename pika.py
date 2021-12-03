@@ -69,8 +69,8 @@ class PikaSCAITest:
                 job = str(rand_id) + job_id
                 start_time = datetime.now() + c * timedelta(minutes=5)
                 end_time = start_time + timedelta(days=1)
-                start_time = str(start_time)
-                end_time = str(end_time)
+                start_time = start_time.timestamp()
+                end_time = end_time.timestamp()
 
                 t1 = time.time()
                 rows = self.current_pika_cluster.zrangebyscore(job, start_time, end_time)
