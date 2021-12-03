@@ -10,10 +10,10 @@ from utils.kv_database_utils import create_pika_cluster
 from utils.util import load_configs_from_files
 
 # r = redis.Redis(host='10.33.4.233', port=9221, db=0)
-# r.zadd("job1", {'a': 1.2})
-# r.zadd('job1', {'b': 3})
-# r.zadd('job1', {'c': 4})
-# print(r.zrangebyscore('job1', 0.1, 5))
+# # r.zadd("job1", {'a': 1.2})
+# # r.zadd('job1', {'b': 3})
+# # r.zadd('job1', {'c': 4})
+# print(r.zrange('0_anomalous_country_communication', 0, -1))
 # compare two method: 1. encode key by ourselves. 2. zrange.
 
 # r.set('foo', 'bar')
@@ -47,7 +47,8 @@ class PikaSCAITest:
                 try:
                     t1 = time.time()
                     # r.zadd("job1", {'a': 1})
-                    self.current_pika_cluster.zadd(job_ids[i], {rad_str: datetime_now + c * timedelta(minutes=5)})
+                    save_time = (datetime_now + c * timedelta(minutes=5)).timestamp()
+                    self.current_pika_cluster.zadd(job_ids[i], {rad_str: save_time})
                     t2 = time.time()
                     ct = t2 - t1
                     file.write(str(ct) + '\n')
