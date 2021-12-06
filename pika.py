@@ -41,14 +41,14 @@ class PikaSCAITest:
         for i in range(30):
             job_ids.append(str(i) + job_id)
 
-        datetime_now = datetime.now()
+        cur_time = datetime.strptime('26 Sep 2012', '%d %b %Y')
         for c in range(iter_count):
             for i in range(JOB_NUM):
                 try:
+                    save_time = int((cur_time + c * timedelta(minutes=5)).timestamp())
+                    saved_data = str(save_time) + rad_str
                     t1 = time.time()
-                    # r.zadd("job1", {'a': 1})
-                    save_time = (datetime_now + c * timedelta(minutes=5)).timestamp()
-                    self.current_pika_cluster.zadd(job_ids[i], {rad_str: save_time})
+                    self.current_pika_cluster.zadd(job_ids[i], {saved_data: save_time})
                     t2 = time.time()
                     ct = t2 - t1
                     file.write(str(ct) + '\n')
@@ -63,17 +63,18 @@ class PikaSCAITest:
     def test_query(self, iter_count=ITER_COUNT):
         t = 0
         file = open(QUERY_FILE_NAME, 'w')
+        cur_time = datetime.strptime('26 Sep 2012', '%d %b %Y')
         for c in range(iter_count):
             try:
-                rand_id = str(random.randint(1, JOB_NUM))
+                rand_id = str(random.randint(1, JOB_NUM) - 1)
                 job = str(rand_id) + job_id
-                start_time = datetime.now() + c * timedelta(minutes=5)
+                start_time = cur_time + c * timedelta(minutes=5)
                 end_time = start_time + timedelta(days=1)
-                start_time = start_time.timestamp()
-                end_time = end_time.timestamp()
+                start_time = int(start_time.timestamp())
+                end_time = int(end_time.timestamp())
 
                 t1 = time.time()
-                rows = self.current_pika_cluster.zrangebyscore(job, start_time, end_time)
+                rows = self.current_pika_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
                 t2 = time.time()
                 ct = t2 - t1
                 file.write(str(ct) + '\n')
@@ -84,6 +85,10 @@ class PikaSCAITest:
                 print(e)
                 time.sleep(0.01)
         print(f"query tooks {t} seconds")
+
+    def del_job(self, jobs):
+        for job in jobs:
+            self.current_pika_cluster.add(job)
 
     def start_test(self):
         print('program start')
