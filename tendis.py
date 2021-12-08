@@ -6,7 +6,7 @@ import random
 import time
 
 from datetime import datetime, timedelta
-from utils.kv_database_utils import create_pika_cluster
+from utils.kv_database_utils import create_tendis_cluster
 from utils.util import load_configs_from_files
 
 # r = redis.StrictRedis(host='10.33.4.236', port=51002, password='test')
@@ -29,8 +29,8 @@ JOB_NUM = 30
 class TendisSCAITest:
     def __init__(self, conf):
         self.conf = conf
-        self.current_pika_cluster = create_pika_cluster(self.conf['tendis_host'],
-                                                        self.conf['tendis_port'])
+        self.current_tendis_cluster = create_tendis_cluster(self.conf['tendis_host'],
+                                                            self.conf['tendis_port'], self.conf['tendis_passwd'])
 
     def test_insert(self, iter_count=ITER_COUNT):
         t = 0
@@ -48,7 +48,7 @@ class TendisSCAITest:
                     save_time = int((cur_time + c * timedelta(minutes=5)).timestamp())
                     saved_data = str(save_time) + rad_str
                     t1 = time.time()
-                    self.current_pika_cluster.zadd(job_ids[i], {saved_data: save_time})
+                    self.current_tendis_cluster.zadd(job_ids[i], {saved_data: save_time})
                     t2 = time.time()
                     ct = t2 - t1
                     file.write(str(ct) + '\n')
@@ -74,7 +74,7 @@ class TendisSCAITest:
                 end_time = int(end_time.timestamp())
 
                 t1 = time.time()
-                rows = self.current_pika_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
+                rows = self.current_tendis_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
                 t2 = time.time()
                 ct = t2 - t1
                 file.write(str(ct) + '\n')
@@ -88,9 +88,10 @@ class TendisSCAITest:
 
     def del_job(self, jobs):
         for job in jobs:
-            self.current_pika_cluster.add(job)
+            self.current_tendis_cluster.delete(job)
 
     def start_test(self):
+        # self.current_tendis_cluster.delete('0_anomalous_country_communication')
         print('program start')
         if self.conf['command'] == 'insert':
             self.test_insert()

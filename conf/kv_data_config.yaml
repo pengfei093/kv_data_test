@@ -6,3 +6,4 @@ pika_host: 10.33.4.234
 pika_port: 9221
 tendis_host: 10.33.4.236
 tendis_port: 51002
+tendis_passwd: test
