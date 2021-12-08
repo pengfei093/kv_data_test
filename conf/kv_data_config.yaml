@@ -4,6 +4,6 @@ tikv_host: 10.33.4.213
 tikv_port: 2379
 pika_host: 10.33.4.234
 pika_port: 9221
-tendis_host: 10.33.4.236
+tendis_host: 10.33.4.230
 tendis_port: 51002
 tendis_passwd: test
