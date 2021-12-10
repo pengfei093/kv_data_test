@@ -16,7 +16,7 @@ job_id = '_anomalous_country_communication'
 ITER_COUNT = 500000
 JOB_NUM = 30
 PRINT_GAP = 1000
-
+KEYSPACE = 'scai_data_test'
 
 class KVDatabaseSCAITest:
     def __init__(self, conf):
@@ -85,7 +85,11 @@ class KVDatabaseSCAITest:
 
     def start_test(self):
         print('program start')
-        self.current_cassandra_session.set_keyspace('scai_data_test')
+        self.current_cassandra_session.execute("""
+            CREATE KEYSPACE IF NOT EXISTS %s
+            WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '2' }
+            """ % KEYSPACE)
+        self.current_cassandra_session.set_keyspace(KEYSPACE)
         self.current_cassandra_session.execute(
             """
             CREATE TABLE IF NOT EXISTS scai (

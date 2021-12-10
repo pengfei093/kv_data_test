@@ -1,4 +1,4 @@
-cassandra_host: 10.33.4.231
+cassandra_host: 10.33.4.213
 cassandra_port: 9042
 tikv_host: 10.33.4.213
 tikv_port: 2379

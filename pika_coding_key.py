@@ -69,6 +69,7 @@ class PikaSCAITestEncoding:
                 rand_id = str(random.randint(1, JOB_NUM) - 1)
                 job = str(rand_id) + job_id_postfix
                 start_time = cur_time + c * timedelta(minutes=5)
+                cur_time_str = start_time
                 end_time = start_time + timedelta(days=1)
                 start_time = int(start_time.timestamp())
                 end_time = int(end_time.timestamp())
@@ -76,10 +77,13 @@ class PikaSCAITestEncoding:
                 t1 = time.time()
                 # data_pipeline = self.current_pika_cluster.pipeline(transaction=False)
                 rows = []
-                for cur_time_str in range(start_time, end_time):
-                    h = self.current_pika_cluster.hget(job, cur_time_str)
+                cur_time_int = start_time
+                while cur_time_int < end_time:
+                    h = self.current_pika_cluster.hget(job, cur_time_int)
                     if h:
                         rows.append(h)
+                    cur_time_str = (cur_time_str + timedelta(minutes=5))
+                    cur_time_int = int(cur_time_str.timestamp())
                 t2 = time.time()
                 # rows = []
                 # for h in data_pipeline.execute():
