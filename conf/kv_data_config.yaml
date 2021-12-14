@@ -7,5 +7,5 @@ pika_port: 9221
 tendis_host: 10.33.4.230
 tendis_port: 51002
 tendis_passwd: test
-kv: 10.33.4.229
+kvrocksdb_host: 10.33.4.229
 kvrocksdb_port: 6666
