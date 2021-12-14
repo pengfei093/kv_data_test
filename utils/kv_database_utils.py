@@ -17,3 +17,7 @@ def create_pika_cluster(pika_host, pika_port):
 
 def create_tendis_cluster(tendis_host, tendis_port, tendis_passwd):
     return redis.Redis(host=tendis_host, port=tendis_port, password=tendis_passwd)
+
+
+def create_rocksdb_cluster(rocksdb_host, rocksdb_port):
+    return redis.Redis(host=rocksdb_host, port=rocksdb_port, db=0)
