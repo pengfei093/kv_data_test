@@ -11,15 +11,15 @@ from utils.util import load_configs_from_files
 ITER_COUNT = 500000
 STRING_LENGTH = 4100
 job_id = '_anomalous_country_communication'
-INSERT_FILE_NAME = 'pika_scai_insert.txt'
-QUERY_FILE_NAME = 'pika_scai_query.txt'
+INSERT_FILE_NAME = 'rocksdb_scai_insert.txt'
+QUERY_FILE_NAME = 'rocksdb_scai_query.txt'
 JOB_NUM = 30
 
 
-class PikaSCAITest:
+class RocksdbSCAITest:
     def __init__(self, conf):
         self.conf = conf
-        self.current_pika_cluster = create_rocksdb_cluster(self.conf['rocksdb_host'],
+        self.current_rocksdb_cluster = create_rocksdb_cluster(self.conf['rocksdb_host'],
                                                            self.conf['rocksdb_port'])
 
     def test_insert(self, iter_count=ITER_COUNT):
@@ -38,7 +38,7 @@ class PikaSCAITest:
                     save_time = int((cur_time + c * timedelta(minutes=5)).timestamp())
                     saved_data = str(save_time) + rad_str
                     t1 = time.time()
-                    self.current_pika_cluster.zadd(job_ids[i], {saved_data: save_time})
+                    self.current_rocksdb_cluster.zadd(job_ids[i], {saved_data: save_time})
                     t2 = time.time()
                     ct = t2 - t1
                     file.write(str(ct) + '\n')
@@ -64,7 +64,7 @@ class PikaSCAITest:
                 end_time = int(end_time.timestamp())
 
                 t1 = time.time()
-                rows = self.current_pika_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
+                rows = self.current_rocksdb_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
                 t2 = time.time()
                 ct = t2 - t1
                 file.write(str(ct) + '\n')
@@ -78,7 +78,7 @@ class PikaSCAITest:
 
     def del_job(self, jobs):
         for job in jobs:
-            self.current_pika_cluster.add(job)
+            self.current_rocksdb_cluster.add(job)
 
     def start_test(self):
         print('program start')
@@ -96,5 +96,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     conf = load_configs_from_files("conf/kv_data_config.yaml")
     conf['command'] = args.command
-    test = PikaSCAITest(conf)
+    test = RocksdbSCAITest(conf)
     test.start_test()
