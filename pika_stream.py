@@ -1,4 +1,4 @@
-import redis
+import redis_test
 
 # r = redis.Redis(host='10.33.4.234', port=9221, db=0)
 # id1 = r.xadd('job1', {'a': 1.2})

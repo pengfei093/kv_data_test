@@ -1,6 +1,6 @@
 import argparse
 import string
-import redis
+import redis_test
 import signal
 import random
 import time

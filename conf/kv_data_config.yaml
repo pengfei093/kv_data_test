@@ -9,3 +9,5 @@ tendis_port: 51002
 tendis_passwd: test
 kvrocksdb_host: 10.33.4.229
 kvrocksdb_port: 6666
+redis_host: 10.33.4.229
+redis_port: 6379

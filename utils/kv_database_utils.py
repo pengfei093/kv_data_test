@@ -21,3 +21,7 @@ def create_tendis_cluster(tendis_host, tendis_port, tendis_passwd):
 
 def create_kvrocksdb_cluster(kvrocksdb_host, kvrocksdb_port):
     return redis.Redis(host=kvrocksdb_host, port=kvrocksdb_port, db=0)
+
+
+def create_redis_cluster(redis_host, redis_port):
+    return redis.Redis(host=redis_host, port=redis_port, db=0)

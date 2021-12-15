@@ -1,36 +1,26 @@
 import argparse
 import string
-import redis_test
 import signal
 import random
 import time
 
 from datetime import datetime, timedelta
-from utils.kv_database_utils import create_tendis_cluster
+from utils.kv_database_utils import create_redis_cluster
 from utils.util import load_configs_from_files
 
-# r = redis.StrictRedis(host='10.33.4.236', port=51002, password='test')
-# r.zadd("job1", {'a': 1.2})
-# r.zadd('job1', {'b': 3})
-# r.zadd('job1', {'c': 4})
-# print(r.zrange('job1', 0, -1))
-# a = 1
-
-# r.set('foo', 'bar')
-# print(r.get('foo'))
 ITER_COUNT = 500000
 STRING_LENGTH = 4100
-job_id = '_anomalous_country_communication'
-INSERT_FILE_NAME = 'tendis_scai_insert.txt'
-QUERY_FILE_NAME = 'tendis_scai_query.txt'
+job_id_postfix = '_'
+INSERT_FILE_NAME = 'redis_scai_insert.txt'
+QUERY_FILE_NAME = 'redis_scai_query.txt'
 JOB_NUM = 30
 
 
-class TendisSCAITest:
+class RedisSCAITest:
     def __init__(self, conf):
         self.conf = conf
-        self.current_tendis_cluster = create_tendis_cluster(self.conf['tendis_host'],
-                                                            self.conf['tendis_port'], self.conf['tendis_passwd'])
+        self.current_redis_cluster = create_redis_cluster(self.conf['redis_host'],
+                                                          self.conf['redis_port'])
 
     def test_insert(self, iter_count=ITER_COUNT):
         t = 0
@@ -38,8 +28,8 @@ class TendisSCAITest:
                           for _ in range(STRING_LENGTH))
         file = open(INSERT_FILE_NAME, 'w')
         job_ids = []
-        for i in range(30):
-            job_ids.append(str(i) + job_id)
+        for i in range(JOB_NUM):
+            job_ids.append(str(i) + job_id_postfix)
 
         cur_time = datetime.strptime('26 Sep 2012', '%d %b %Y')
         for c in range(iter_count):
@@ -48,7 +38,7 @@ class TendisSCAITest:
                     save_time = int((cur_time + c * timedelta(minutes=5)).timestamp())
                     saved_data = str(save_time) + rad_str
                     t1 = time.time()
-                    self.current_tendis_cluster.zadd(job_ids[i], {saved_data: save_time})
+                    self.current_redis_cluster.zadd(job_ids[i], {saved_data: save_time})
                     t2 = time.time()
                     ct = t2 - t1
                     file.write(str(ct) + '\n')
@@ -67,14 +57,14 @@ class TendisSCAITest:
         for c in range(iter_count):
             try:
                 rand_id = str(random.randint(1, JOB_NUM) - 1)
-                job = str(rand_id) + job_id
+                job = str(rand_id) + job_id_postfix
                 start_time = cur_time + c * timedelta(minutes=5)
                 end_time = start_time + timedelta(days=1)
                 start_time = int(start_time.timestamp())
                 end_time = int(end_time.timestamp())
 
                 t1 = time.time()
-                rows = self.current_tendis_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
+                rows = self.current_redis_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
                 t2 = time.time()
                 ct = t2 - t1
                 file.write(str(ct) + '\n')
@@ -88,10 +78,9 @@ class TendisSCAITest:
 
     def del_job(self, jobs):
         for job in jobs:
-            self.current_tendis_cluster.delete(job)
+            self.current_redis_cluster.add(job)
 
     def start_test(self):
-        # self.current_tendis_cluster.delete('0_anomalous_country_communication')
         print('program start')
         if self.conf['command'] == 'insert':
             self.test_insert()
@@ -107,5 +96,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     conf = load_configs_from_files("conf/kv_data_config.yaml")
     conf['command'] = args.command
-    test = TendisSCAITest(conf)
+    test = RedisSCAITest(conf)
     test.start_test()
