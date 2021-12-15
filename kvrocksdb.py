@@ -8,12 +8,12 @@ from datetime import datetime, timedelta
 from utils.kv_database_utils import create_kvrocksdb_cluster
 from utils.util import load_configs_from_files
 
-ITER_COUNT = 500000
+ITER_COUNT = 50000
 STRING_LENGTH = 4100
 job_id = '_anomalous_country_communication'
 INSERT_FILE_NAME = 'kvrocksdb_scai_insert.txt'
 QUERY_FILE_NAME = 'kvrocksdb_scai_query.txt'
-JOB_NUM = 30
+JOB_NUM = 1
 
 
 class KvRocksdbSCAITest:
@@ -28,14 +28,14 @@ class KvRocksdbSCAITest:
                           for _ in range(STRING_LENGTH))
         file = open(INSERT_FILE_NAME, 'w')
         job_ids = []
-        for i in range(30):
+        for i in range(JOB_NUM):
             job_ids.append(str(i) + job_id)
 
         cur_time = datetime.strptime('26 Sep 2012', '%d %b %Y')
         for c in range(iter_count):
             for i in range(JOB_NUM):
                 try:
-                    save_time = int((cur_time + c * timedelta(minutes=5)).timestamp())
+                    save_time = ((cur_time + c * timedelta(minutes=5)).timestamp())
                     saved_data = str(save_time) + rad_str
                     t1 = time.time()
                     self.current_kvrocksdb_cluster.zadd(job_ids[i], {saved_data: save_time})

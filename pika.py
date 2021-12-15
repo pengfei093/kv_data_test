@@ -88,7 +88,7 @@ class PikaSCAITest:
 
     def del_job(self, jobs):
         for job in jobs:
-            self.current_pika_cluster.add(job)
+            self.current_pika_cluster.delete(job)
 
     def start_test(self):
         print('program start')

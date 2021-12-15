@@ -18,6 +18,7 @@ JOB_NUM = 30
 PRINT_GAP = 1000
 KEYSPACE = 'scai_data_test'
 
+
 class KVDatabaseSCAITest:
     def __init__(self, conf):
         self.conf = conf
