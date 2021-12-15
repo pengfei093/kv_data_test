@@ -28,7 +28,7 @@ class KvRocksdbSCAITest:
                           for _ in range(STRING_LENGTH))
         file = open(INSERT_FILE_NAME, 'w')
         job_ids = []
-        for job_index in range(30):
+        for job_index in range(JOB_NUM):
             job_ids.append(str(job_index) + job_id_postfix)
 
         cur_time = datetime.strptime('26 Sep 2012', '%d %b %Y')
