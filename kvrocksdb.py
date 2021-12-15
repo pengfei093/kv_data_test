@@ -10,10 +10,10 @@ from utils.util import load_configs_from_files
 
 ITER_COUNT = 500000
 STRING_LENGTH = 4100
-job_id_postfix = '_anomalous_country_communication'
+job_id_postfix = '_'
 INSERT_FILE_NAME = 'kvrocksdb_scai_insert.txt'
 QUERY_FILE_NAME = 'kvrocksdb_scai_query.txt'
-JOB_NUM = 1
+JOB_NUM = 30
 
 
 class KvRocksdbSCAITest:
