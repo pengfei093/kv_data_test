@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from utils.kv_database_utils import create_kvrocksdb_cluster
 from utils.util import load_configs_from_files
 
-ITER_COUNT = 50000
+ITER_COUNT = 500000
 STRING_LENGTH = 4100
 job_id = '_anomalous_country_communication'
 INSERT_FILE_NAME = 'kvrocksdb_scai_insert.txt'
