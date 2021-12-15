@@ -39,7 +39,7 @@ class KvRocksdbSCAITest:
                     saved_data = rad_str
 
                     t1 = time.time()
-                    self.current_kvrocksdb_cluster.hset(job_ids[job_index], save_time, saved_data)
+                    self.current_kvrocksdb_cluster.set(job_ids[job_index]+str(save_time), saved_data)
                     t2 = time.time()
 
                     running_time = t2 - t1
