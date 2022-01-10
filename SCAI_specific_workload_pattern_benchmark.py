@@ -88,7 +88,7 @@ class KVDatabaseSCAITest:
         print('program start')
         self.current_cassandra_session.execute("""
             CREATE KEYSPACE IF NOT EXISTS %s
-            WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '2' }
+            WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '1' }
             """ % KEYSPACE)
         self.current_cassandra_session.set_keyspace(KEYSPACE)
         self.current_cassandra_session.execute(
