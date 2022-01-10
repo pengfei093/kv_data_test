@@ -17,7 +17,8 @@ ITER_COUNT = 500000
 JOB_NUM = 30
 PRINT_GAP = 1000
 KEYSPACE = 'scai_data_test'
-
+INSERT_FILE_NAME = 'cass_large_test_insert_qps.txt'
+QUERY_FILE_NAME = 'cass_large_test_query_qps.txt'
 
 class KVDatabaseSCAITest:
     def __init__(self, conf):
@@ -30,7 +31,7 @@ class KVDatabaseSCAITest:
         t = 0
         rad_str = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                           for _ in range(STRING_LENGTH))
-        file = open('scai_insert_test.txt', 'w')
+        file = open(QUERY_FILE_NAME, 'w')
         job_ids = []
         for i in range(30):
             job_ids.append(str(i) + job_id)
@@ -59,7 +60,7 @@ class KVDatabaseSCAITest:
 
     def test_query(self, iter_count=ITER_COUNT):
         t = 0
-        file = open('scai_query_test.txt', 'w')
+        file = open(INSERT_FILE_NAME, 'w')
         for c in range(iter_count):
             try:
                 rand_id = str(random.randint(1, JOB_NUM))
