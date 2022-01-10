@@ -18,7 +18,7 @@ from utils.util import load_configs_from_files
 
 # r.set('foo', 'bar')
 # print(r.get('foo'))
-ITER_COUNT = 500000
+ITER_COUNT = 1500000
 STRING_LENGTH = 4100
 job_id = '_anomalous_country_communication'
 INSERT_FILE_NAME = 'pika_scai_insert.txt'
