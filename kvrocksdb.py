@@ -11,8 +11,8 @@ from utils.util import load_configs_from_files
 ITER_COUNT = 1500000
 STRING_LENGTH = 4100
 job_id_postfix = '_'
-INSERT_FILE_NAME = 'kvrocksdb_scai_insert.txt'
-QUERY_FILE_NAME = 'kvrocksdb_scai_query.txt'
+INSERT_FILE_NAME = 'kv_large_test_insert_qps.txt'
+QUERY_FILE_NAME = 'kv_large_test_query_qps.txt'
 JOB_NUM = 30
 
 
