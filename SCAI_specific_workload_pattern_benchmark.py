@@ -13,7 +13,7 @@ import random
 
 STRING_LENGTH = 4100
 job_id = '_anomalous_country_communication'
-ITER_COUNT = 500000
+ITER_COUNT = 1500000
 JOB_NUM = 30
 PRINT_GAP = 1000
 KEYSPACE = 'scai_data_test'
@@ -31,7 +31,7 @@ class KVDatabaseSCAITest:
         t = 0
         rad_str = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
                           for _ in range(STRING_LENGTH))
-        file = open(QUERY_FILE_NAME, 'w')
+        file = open(INSERT_FILE_NAME, 'w')
         job_ids = []
         for i in range(30):
             job_ids.append(str(i) + job_id)
@@ -60,7 +60,7 @@ class KVDatabaseSCAITest:
 
     def test_query(self, iter_count=ITER_COUNT):
         t = 0
-        file = open(INSERT_FILE_NAME, 'w')
+        file = open(QUERY_FILE_NAME, 'w')
         for c in range(iter_count):
             try:
                 rand_id = str(random.randint(1, JOB_NUM))
