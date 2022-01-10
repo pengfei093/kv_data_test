@@ -20,6 +20,7 @@ KEYSPACE = 'scai_data_test'
 INSERT_FILE_NAME = 'cass_large_test_insert_qps.txt'
 QUERY_FILE_NAME = 'cass_large_test_query_qps.txt'
 
+
 class KVDatabaseSCAITest:
     def __init__(self, conf):
         self.conf = conf
