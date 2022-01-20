@@ -13,7 +13,7 @@ import random
 
 STRING_LENGTH = 4100
 job_id = '_anomalous_country_communication'
-ITER_COUNT = 1500000
+ITER_COUNT = 500000
 JOB_NUM = 30
 PRINT_GAP = 1000
 KEYSPACE = 'scai_data_test'
@@ -49,6 +49,7 @@ class KVDatabaseSCAITest:
                                                                str(datetime_now + c * timedelta(minutes=5)),
                                                                job_ids[i], rad_str))
                     t2 = time.time()
+                    time.sleep(300)
                     ct = t2 - t1
                     file.write(str(ct) + '\n')
                     t = t + ct
