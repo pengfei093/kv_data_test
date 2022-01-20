@@ -11,8 +11,8 @@ from utils.util import load_configs_from_files
 ITER_COUNT = 1500000
 STRING_LENGTH = 4100
 job_id_postfix = '_'
-INSERT_FILE_NAME = 'kvR_large_test_insert_qps.txt'
-QUERY_FILE_NAME = 'kvR_large_test_query_qps.txt'
+INSERT_FILE_NAME = 'kvR_multi_test_insert_qps.txt'
+QUERY_FILE_NAME = 'kvR_multi_test_query_qps.txt'
 JOB_NUM = 30
 
 
@@ -44,6 +44,8 @@ class KvRocksdbSCAITest:
 
                     running_time = t2 - t1
                     file.write(str(running_time) + '\n')
+                    print('sleep 5 mins')
+                    time.sleep(300)
                     t = t + running_time
 
                 except Exception as e:
