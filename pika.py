@@ -21,8 +21,8 @@ from utils.util import load_configs_from_files
 ITER_COUNT = 1500000
 STRING_LENGTH = 4100
 job_id = '_anomalous_country_communication'
-INSERT_FILE_NAME = 'pika_large_test_insert_qps.txt'
-QUERY_FILE_NAME = 'pika_large_test_query_qps.txt'
+INSERT_FILE_NAME = 'pika_multi_test_insert_qps.txt'
+QUERY_FILE_NAME = 'pika_multi_test_query_qps.txt'
 JOB_NUM = 30
 
 
@@ -52,6 +52,8 @@ class PikaSCAITest:
                     t2 = time.time()
                     ct = t2 - t1
                     file.write(str(ct) + '\n')
+                    print('sleep 5 mins')
+                    time.sleep(300)
                     t = t + ct
                 except Exception as e:
                     print(e)
