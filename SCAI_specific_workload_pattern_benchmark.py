@@ -17,8 +17,8 @@ ITER_COUNT = 500000
 JOB_NUM = 30
 PRINT_GAP = 1000
 KEYSPACE = 'scai_data_test'
-INSERT_FILE_NAME = 'cass_large_test_insert_qps.txt'
-QUERY_FILE_NAME = 'cass_large_test_query_qps.txt'
+INSERT_FILE_NAME = 'cass_test_insert_qps_multi.txt'
+QUERY_FILE_NAME = 'cass_test_query_qps_multi.txt'
 
 
 class KVDatabaseSCAITest:
