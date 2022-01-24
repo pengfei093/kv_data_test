@@ -82,45 +82,6 @@ class KvRocksdbSCAITest:
     #         if c % 1000 == 1:
     #             print(f'insert {c * JOB_NUM} tooks {t} seconds')
     #     print(f"insert times tooks {t} seconds")
-    def test_query(self, iter_count=ITER_COUNT):
-        t = 0
-        file = open(QUERY_FILE_NAME, 'w')
-        cur_time = datetime.strptime('26 Sep 2012', '%d %b %Y')
-        for c in range(iter_count):
-            try:
-                rand_id = str(random.randint(1, JOB_NUM) - 1)
-                job = str(rand_id) + job_id_postfix
-                start_time = cur_time + c * timedelta(minutes=5)
-                cur_time_str = start_time
-                end_time = start_time + timedelta(days=1)
-                start_time = int(start_time.timestamp())
-                end_time = int(end_time.timestamp())
-
-                t1 = time.time()
-                # data_pipeline = self.current_pika_cluster.pipeline(transaction=False)
-                rows = []
-                cur_time_int = start_time
-                while cur_time_int < end_time:
-                    h = self.current_kvrocksdb_cluster.get(job+str(cur_time_int))
-                    if h:
-                        rows.append(h)
-                    cur_time_str = (cur_time_str + timedelta(minutes=5))
-                    cur_time_int = int(cur_time_str.timestamp())
-                t2 = time.time()
-                # rows = []
-                # for h in data_pipeline.execute():
-                #     print(h)
-                #     if h:
-                #         rows.append(h)
-                running_time = t2 - t1
-                file.write(str(running_time) + '\n')
-                t = t + running_time
-                if c % 1000 == 1:
-                    print(f'query {c} times tooks {t} seconds')
-            except Exception as e:
-                print(e)
-                time.sleep(0.01)
-        print(f"query tooks {t} seconds")
     # def test_query(self, iter_count=ITER_COUNT):
     #     t = 0
     #     file = open(QUERY_FILE_NAME, 'w')
@@ -130,22 +91,61 @@ class KvRocksdbSCAITest:
     #             rand_id = str(random.randint(1, JOB_NUM) - 1)
     #             job = str(rand_id) + job_id_postfix
     #             start_time = cur_time + c * timedelta(minutes=5)
+    #             cur_time_str = start_time
     #             end_time = start_time + timedelta(days=1)
     #             start_time = int(start_time.timestamp())
     #             end_time = int(end_time.timestamp())
     #
     #             t1 = time.time()
-    #             rows = self.current_kvrocksdb_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
+    #             # data_pipeline = self.current_pika_cluster.pipeline(transaction=False)
+    #             rows = []
+    #             cur_time_int = start_time
+    #             while cur_time_int < end_time:
+    #                 h = self.current_kvrocksdb_cluster.get(job+str(cur_time_int))
+    #                 if h:
+    #                     rows.append(h)
+    #                 cur_time_str = (cur_time_str + timedelta(minutes=5))
+    #                 cur_time_int = int(cur_time_str.timestamp())
     #             t2 = time.time()
-    #             ct = t2 - t1
-    #             file.write(str(ct) + '\n')
-    #             t = t + ct
+    #             # rows = []
+    #             # for h in data_pipeline.execute():
+    #             #     print(h)
+    #             #     if h:
+    #             #         rows.append(h)
+    #             running_time = t2 - t1
+    #             file.write(str(running_time) + '\n')
+    #             t = t + running_time
     #             if c % 1000 == 1:
     #                 print(f'query {c} times tooks {t} seconds')
     #         except Exception as e:
     #             print(e)
     #             time.sleep(0.01)
     #     print(f"query tooks {t} seconds")
+    def test_query(self, iter_count=ITER_COUNT):
+        t = 0
+        file = open(QUERY_FILE_NAME, 'w')
+        cur_time = datetime.strptime('26 Sep 2012', '%d %b %Y')
+        for c in range(iter_count):
+            try:
+                rand_id = str(random.randint(1, JOB_NUM) - 1)
+                job = str(rand_id) + job_id_postfix
+                start_time = cur_time + c * timedelta(minutes=5)
+                end_time = start_time + timedelta(days=1)
+                start_time = int(start_time.timestamp())
+                end_time = int(end_time.timestamp())
+
+                t1 = time.time()
+                rows = self.current_kvrocksdb_cluster.zrangebyscore(job, start_time - 1, end_time, withscores=True)
+                t2 = time.time()
+                ct = t2 - t1
+                file.write(str(ct) + '\n')
+                t = t + ct
+                if c % 1000 == 1:
+                    print(f'query {c} times tooks {t} seconds')
+            except Exception as e:
+                print(e)
+                time.sleep(0.01)
+        print(f"query tooks {t} seconds")
 
     def del_job(self, jobs):
         for job in jobs:
