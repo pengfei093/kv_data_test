@@ -41,6 +41,7 @@ class KvRocksdbSCAITest:
                     self.current_kvrocksdb_cluster.zadd(job_ids[i], {saved_data: save_time})
                     t2 = time.time()
                     ct = t2 - t1
+                    print('sleep 5 mins')
                     time.sleep(300)
                     file.write(str(ct) + '\n')
                     t = t + ct
