@@ -8,11 +8,11 @@ from datetime import datetime, timedelta
 from utils.kv_database_utils import create_kvrocksdb_cluster
 from utils.util import load_configs_from_files
 
-ITER_COUNT = 1500000
+ITER_COUNT = 500000
 STRING_LENGTH = 4100
 job_id_postfix = '_'
-INSERT_FILE_NAME = 'kvR_large_test_insert_qps.txt'
-QUERY_FILE_NAME = 'kvR_large_test_query_qps.txt'
+INSERT_FILE_NAME = 'kvR_multi_test_insert_qps.txt'
+QUERY_FILE_NAME = 'kvR_multi_test_query_qps.txt'
 JOB_NUM = 30
 
 
@@ -41,6 +41,7 @@ class KvRocksdbSCAITest:
                     self.current_kvrocksdb_cluster.zadd(job_ids[i], {saved_data: save_time})
                     t2 = time.time()
                     ct = t2 - t1
+                    time.sleep(300)
                     file.write(str(ct) + '\n')
                     t = t + ct
                 except Exception as e:
